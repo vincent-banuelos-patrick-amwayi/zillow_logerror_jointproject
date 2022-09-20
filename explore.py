@@ -20,7 +20,11 @@ def countygraph(df):
 
     df['county_cluster'] = kmeans.predict(county_cluster)
 
-    sns.relplot(data=df.sample(1000), x='county', y='logerror', hue='county_cluster',height=8)
+    print("Here is show the logerror of the entire map of all 3 counties.")
+    sns.relplot(data=df, x='longitude', y='latitude', hue='logerror',height=8)
+    plt.show()
+    print("Here is shown all three counties split up for better visability.")
+    sns.relplot(data=df, x='longitude', y='latitude', hue='logerror',col='county',height=8)
     plt.show()
     return
 
