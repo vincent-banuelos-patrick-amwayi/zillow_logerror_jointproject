@@ -155,15 +155,21 @@ def prep_zillow(df):
     return df
 
 def my_split(df):
+    '''
+    Splitting the dataframe into 3 seperate samples to prevent data leakage
+    '''
+
     train_validate, test = train_test_split(df, test_size=.2, random_state=123)
     train, validate = train_test_split(train_validate, test_size=.3, random_state=123)
     return train, validate, test
 
-## dictionary to be used in imputing_missing_values function
 
 
 
 def handle_missing_values(df, prop_required_column, prop_required_row):
+    '''
+    Removes observations that do not have above the user specified amount of data in each row and columns.
+    '''
     
     prop_null_column = 1 - prop_required_column
     
@@ -198,6 +204,9 @@ def remove_outliers(df):
 
 
 def wrangle_zillow():
+    '''
+    Combines data acquisition and preparation into one function and returns the 3 split samples.
+    '''
     df = get_zillow()
     df = prep_zillow(df)
     df = handle_missing_values(df,.75,.75)

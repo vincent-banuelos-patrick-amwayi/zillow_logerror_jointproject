@@ -31,6 +31,9 @@ scalable_columns = ['house_lotsize_ratio', 'tax_value','los_angeles','orange','v
 train_scaled, validate_scaled, test_scaled = wr.scale_data(train, validate, test, scalable_columns)
 
 def scale_data_xy_split():
+    '''
+    Returns scaled versions of our dataframes using the features investigated earlier on the project.
+    '''
     X_train_scaled = train_scaled
     y_train = train['logerror']
 
@@ -48,7 +51,7 @@ def scale_data_xy_split():
 
 def run_da_stuff(X_train_scaled,y_train,X_validate_scaled,y_validate):
     '''
-    returns results for different model types for train and validate dataset
+    Runs several models for both the train and validate samples and returns the results in a clean dataframe.
     '''
     pred_mean = y_train.logerror.mean()
     y_train['pred_mean'] = pred_mean
@@ -162,8 +165,7 @@ def run_da_stuff(X_train_scaled,y_train,X_validate_scaled,y_validate):
 
 def test_tester(X_train_scaled,y_train,X_validate_scaled,y_validate,X_test_scaled,y_test):
     ''' 
-    This function takes in the X and y objects and then runs and returns a DataFrame of
-    results for the Tweedie Regressor model 
+    Using our best performing model, returna dataframe that shows how the model performed on all 3 samples of data as well as how the baseline model compares.
     '''
 
     #baseline model

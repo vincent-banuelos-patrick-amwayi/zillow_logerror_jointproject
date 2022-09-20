@@ -14,6 +14,9 @@ from scipy import stats as stats
 
 
 def countygraph(df):
+    '''
+    Function will return a graph showing logerror differences between the 3 counties Los Angeles, Ventura and Orange County
+    '''
     county_cluster = df[['los_angeles', 'orange', 'ventura']]
     kmeans = KMeans(n_clusters=3)
     kmeans.fit(county_cluster)
@@ -30,7 +33,7 @@ def countygraph(df):
 
 def ventura_test(df):
     ''' 
-    Runs statitical testing for bed and bathroom comparison.
+    Statistical test that will look for a difference in logerror for homes located in VENTURA and homes not in VENTURA
     '''
     long_le = df[df.county == 'ventura'].logerror
     lat_le = df[df.county != 'ventura'].logerror
@@ -57,6 +60,9 @@ No difference in logerror between homes in ventura and homes not in ventura.''')
 
 
 def tv_graph(df):
+    '''
+    # Returns a graph that uses the created tax cluster and shows its relationship  to logerror in a geographical map.
+    '''
     tv_cluster = df[['tax_value','landtaxvaluedollarcnt','structuretaxvaluedollarcnt']]
 
     kmeans = KMeans(n_clusters=3)
@@ -64,12 +70,14 @@ def tv_graph(df):
 
 
     df['tv_cluster'] = kmeans.predict(tv_cluster)
-    sns.relplot(data=df, x='latitude', y='longitude', col='tv_cluster',height=10)
+    sns.relplot(data=df, x='latitude', y='longitude', hue='tv_cluster',height=10)
     plt.show()
     return
 
 def tax_corr_test(df):
-    
+    '''
+    Performs statistical testing and looks for a relationship between our tax cluster created and logerror
+    '''
     #stats.spearmanr()
     r, p  = stats.spearmanr(df.tv_cluster, df.logerror)
 
@@ -88,6 +96,9 @@ There IS NOT a relationship between our value cluster and logerror.''')
 
 
 def htls_graph(df):
+    '''
+    Returns a graph showing our created ratio variable and its relationship to logerror split by clusters to look for any useful information
+    '''
     hlsizeratio = df[['house_lotsize_ratio']]
 
     kmeans = KMeans(n_clusters=4)
@@ -100,7 +111,7 @@ def htls_graph(df):
 
 def sqft_lsize_ttest(df):
     ''' 
-    Runs statistical test for yearbuilt column, seeing which houses are more expensive, pre-1972 or post-1972.
+    # Returns statistical test that looks to see if homes with a below 60 percent house sqft to lot sqft ratio have a lower logerror.
     '''
     below_50 = df.logerror[df.house_lotsize_ratio <= 60]
     above_50 = df.logerror[df.house_lotsize_ratio > 60]
@@ -126,6 +137,9 @@ Homes with a less than 60 percent house to lot ratio DO NOT have a lower logerro
     return
 
 def yb_graph(df):
+    '''
+    # Returns a graph that shows the relationship between the year a home was built and the logerror clustering was used to look for useful information.
+    '''
     yb_cluster = df[['yearbuilt']]
     kmeans = KMeans(n_clusters=4)
     kmeans.fit(yb_cluster)
@@ -140,7 +154,7 @@ def yb_graph(df):
 
 def yb_test(df):
     ''' 
-    Runs statistical test for yearbuilt column, seeing which houses are more expensive, pre-1972 or post-1972.
+    # Returns statistical test that looks to see if homes built after 2010 have a logerror
     '''
     older_2k = df.logerror[df.yearbuilt < 2010]
     newer_2k = df.logerror[df.yearbuilt > 2010]
