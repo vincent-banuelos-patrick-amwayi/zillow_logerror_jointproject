@@ -129,11 +129,11 @@ def sqft_lsize_ttest(df):
     if p/2 < alpha and t > 0:
         print('''Reject the Null Hypothesis.
         
-Homes with a less than 60 percent house to lot ratio DO have a lower logerror.''')
+Homes with a more than 60 percent house to lot ratio DO have a lower logerror.''')
     else:
         print('''Fail to reject the Null Hypothesis.
         
-Homes with a less than 60 percent house to lot ratio DO NOT have a lower logerror.''')
+Homes with a more than 60 percent house to lot ratio DO NOT have a lower logerror.''')
     return
 
 def yb_graph(df):
@@ -176,6 +176,6 @@ Homes built before 2010 DO have a logerror closer to 0.''')
     else:
         print('''Fail to reject the Null Hypothesis.
         
-Homes built before 2010 DO NOT have a logerror cloeser to 0.''')
+Homes built before 2010 DO NOT have a logerror closer to 0.''')
     return
 
