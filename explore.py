@@ -53,13 +53,14 @@ No difference in logerror between homes in ventura and homes not in ventura.''')
 
 
 def tv_graph(df):
-    tv_cluster = df[['tax_value']]
+    tv_cluster = df[['tax_value','landtaxvaluedollarcnt','structuretaxvaluedollarcnt']]
 
     kmeans = KMeans(n_clusters=3)
     kmeans.fit(tv_cluster)
 
+
     df['tv_cluster'] = kmeans.predict(tv_cluster)
-    sns.jointplot(data=df, x='tax_value', y='logerror', hue='tv_cluster',height=10)
+    sns.relplot(data=df, x='latitude', y='longitude', col='tv_cluster',height=10)
     plt.show()
     return
 
@@ -74,13 +75,12 @@ def tax_corr_test(df):
     if p < alpha:
         print('''Reject the Null Hypothesis.
         
-There is linear correlation between tax_value and logerror.''')
+There IS a relationship between value cluster and logerror.''')
     else:
         print('''Fail to reject the Null Hypothesis.
         
-There is no linear correlation between tax_value and logerror.''')
+There IS NOT a relationship between our value cluster and logerror.''')
     return
-
 
 
 def htls_graph(df):
