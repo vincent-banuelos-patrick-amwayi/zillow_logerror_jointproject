@@ -1,7 +1,7 @@
-# <a name="top"></a>ZILLOW HOME VALUE PREDICTION - REGRESSION PROJECT
+# <a name="top"></a>ZILLOW LOG ERROR PREDICTION - CLUSTERING PROJECT
 ![]()
 
-by: Vincent Banuelos
+by: Patrick Amwayi & Vincent Banuelos
 
 ***
 [[Project Description/Goals](#project_description_goals)]
@@ -9,28 +9,25 @@ by: Vincent Banuelos
 [[Planning](#planning)]
 [[Data Dictionary](#dictionary)]
 [[Reproduction Requirements](#reproduce)]
+[[Pipeline Takeaways](#pipeline)]
 [[Conclusion](#conclusion)]
 
 ___
 
 ## <a name="project_description_goals"></a>Project Description/Goals:
-The purpose of this project is to construct a model to predict assessed home value for single family properties using regression techniques.
+- The goal of this project is to identify key drivers of logerror in the Zillow property value estimates and come up with a model for predicting the logerror.
 
-Goal 1: Find the key drivers of property value for single family properties.
-
-Goal 2: Construct an ML Regression model that predict propery tax assessed values of Single Family Properties using attributes of the properties.
-
-Goal 3: Deliver a report that a data science team can read through and replicate, understand what steps were taken, why and what the outcome was.
+- To identify key attributes that drive the logerror in Zestimates. This will help us come up with better prediction models so that Zillow can remain competitive in the housing market. Compare all models and evaluated by how well they performs over the baseline. To give recommendations that can help reduce the overall average logerror.
 
 [[Back to top](#top)]
 
 
 ## <a name="initial_questions"></a>Initial Questions:
 
-1. How does the size of a property affect the price?
-2. Which county has the most expensive properties on average?
-3. Do newer homes sell for more than older homes?
-4. What affects house prices more bathrooms or bedrooms?
+- Does the county a property is located in affect it's log error?
+- Does the tax variables of a house affect the logerror?
+- Does the ratio of home sqft to lot sqft affect logerror?
+- Does the year a house was built affect logerror?
 
 [[Back to top](#top)]
 
@@ -43,7 +40,7 @@ Goal 3: Deliver a report that a data science team can read through and replicate
 - Store the acquisition and preparation functions in a wrangle.py module function, and prepare data in Final Report Notebook by importing and using the function.
 - Clearly define at least two hypotheses, set an alpha, run the statistical tests needed, reject or fail to reject the Null Hypothesis, and document findings and takeaways.
 - Establish a baseline accuracy and document well.
-- Train 3 different regression models.
+- Train at least 3 different regression models.
 - Evaluate models on train and validate datasets.
 - Choose the model that performs the best and evaluate that single model on the test dataset.
 - Document conclusions, takeaways, and next steps in the Final Report Notebook.
@@ -54,27 +51,21 @@ Goal 3: Deliver a report that a data science team can read through and replicate
 
 | Target Attribute | Definition | Data Type |
 | ----- | ----- | ----- |
-|tax_value|The total tax assessed value of the parcel|float|
+|logerror|The difference betwen the log of the Zestimate and the log of the sale price|float|
 ---
 | Feature | Definition | Data Type |
 | ----- | ----- | ----- |
-| parcelid |  Unique identifier for parcels (lots)  | int |
-| bedrooms |  Number of bedrooms in home | float |
-| bathrooms|  Number of bathrooms in home including fractional bathrooms | float |
-| sqft |  Calculated total finished living area of the home | float |
 | county | Name of county property is located in| object |
-| fireplacecnt|  Number of fireplaces in a home (if any)| float|
-| garagecnt | Total number of garages on the lot including an attached garage | float |
-| lotsizesquarefeet |  Area of the lot in square feet | float |
 | yearbuilt |  The Year the principal residence was built| float |
-| poolcnt |  Number of pools on the lot (if any) | float |
-| transactiondate | Date home was sold | datetime |
-| zip | Zipcode of property | float |
+| tax_value |  The total tax assessed value of the parcel | float |
+| structuretaxvaluedollarcnt | The assessed value of the built structure on the parcel| float |
+| landtaxvaluedollarcnt | The assessed value of the land area of the parcel | float |
 | latitude |  Latitude of the middle of the parcel multiplied by 10e6 | float |
 | longitude |  Longitude of the middle of the parcel multiplied by 10e6 | float |
-| los_angeles| 1 fi the house is located within Los Angeles County|int|
-| orange| 1 fi the house is located within Orange County|int|
-| ventura| 1 fi the house is located within Ventura County|int|
+| los_angeles| 1 if the house is located within Los Angeles County|int|
+| orange| 1 if the house is located within Orange County|int|
+| ventura| 1 if the house is located within Ventura County|int|
+| house_lotsize_ratio| Gives the percentage of land a house takes up out of the lotsize| float |
 
 ---
 
@@ -89,29 +80,39 @@ You will need your own env.py file with database credentials then follow the ste
 [[Back to top](#top)]
 
 
-## <a name="conclusion"></a>Conclusion and Next Steps:
+## <a name="pipeline"></a>Pipeline Conclusions and Takeaways:
 
-- Exploration of Data showed that the following items showed the following features have at least some relationship to churn.
-    - Square footage of the property
-    - Number of bedrooms and bathrooms
-    - Location of the properties
-    - Property age
-- Takeaways
-    - Out of all three counties, Los Angeles has the cheapest average price for housing. 
-    - Los angeles however has a lot more houses that are higher than the average price yet relatively smaller in terms of square footage. 
-    - Los Angeles has more of an abundant of older homes.
-    - No matter the county it seems homes built after 1960 are above the average Tax Value.
-    - Homes with above the median amonut of bathrooms and below the median amount of bedrooms are more expensive then the opposite. 
+###  Wrangling Takeaways
+- We started off by pulling a SQL query for Single Family homes sold in 2017. 
+- Approximately 52,000 observations were recieved from the CodeUP database using SQL.
+- Following the Data Acquisition the following preparation work was done to the acquired data:
+   - Removed columns and rows that were missing more than 50% of their data so as to ensure observations were suitable for this project.
+   - Following data prepartion we were left with a dataframe consisting of 43,628 observations.
+   - Split data into 3 datasets, train, validate and test.
 
-- Model
-  - The Tweedie Regressor regression model performed best with a $205,837 RMSE and a .246 R2 value for the train dataset and a $200,559 RMSE, .257 R2 value for the validate dataset.
-  - For the test dataset the model performs a little worse, with a drop off of $3,000.
+### Exploration Summary
+- We chose features to ivestigate, and created clusters for those selected features to see if they could assist in finding drivers for logerror. Of all the features selected only tax_value showed a relationship towards logerror.
 
-- Next Steps/Reccomendations
-    - Following this initial project, I would like to create a more refined model. Whether it is through running different groups of features through my current model, tuning the hyperparameters or both.
-    - As well as creating more python files that store functions so as to make the final report less filled by code and easier to read.
-    - Create a feature that clusters locations in the dataset, most home prices fluctuate by location within cities. With certain city locations being higher in crime, less wealthy, under developed, etc.
-    - Include previous assesments of the porperties to see if previous pricing of properties affect sell price.
-    
+- Whatever the case we will take these features into modeling and see if they assist in improving logerror prediction.
+
+### Modeling takeaways
+- The Polynomial Features Degrees = 3 model peformed the best out of all 4 models tested for both train and validate datasets. 
+
+- However did not outperform baseline on the test dataset. Further research will need to be done to improve these models.
+
+[[Back to top](#top)]
+
+
+## <a name="conclusion"></a>Conclusion, Reccomendations and Next Steps:
+
+- Of the features we investigated, the tax variable features and location features showed a relationshi[p owards logerror.
+
+- With the housing market being so volatile and prone to being affected by outside forces it can be hard to predict both pricing and improve logerror.
+
+- We believe that this dataset is simply too large and perhaps focusing in on smaller areas may provide some benefits.
+
+- With that said our final conclusion is that the features elected for our model are not ones to be utilized and further research will need to be done to improve the logerror.
+
+- Next steps after this project may be to choose different features and focus in on smaller areas with the 3 counties.    
     
 [[Back to top](#top)]
